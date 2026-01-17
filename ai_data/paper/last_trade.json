@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "model_id": "m_d7c07042ac2b",
+  "used_row_index": 501,
+  "mid_price": 83192.28,
+  "y_hat": -8.154455513685068e-05,
+  "target_position": 0.0,
+  "executed": true,
+  "fill": {
+    "ok": true,
+    "price": 83192.28,
+    "delta_units": 0.0,
+    "fee": 0.0,
+    "cash_after": 7060034.948718328,
+    "position_units_after": 0.0,
+    "equity_after": 7060034.948718328
+  },
+  "pre_trade_ok": true,
+  "pre_trade_reasons": [],
+  "post_trade_ok": true,
+  "post_trade_reasons": [],
+  "state_path": "ai_data/paper/state.json",
+  "report_path": "ai_data/paper/last_trade.json"
+}

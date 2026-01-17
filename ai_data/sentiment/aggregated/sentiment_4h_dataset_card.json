@@ -1,0 +1,9 @@
+{
+  "name": "sentiment_aggregated_4h",
+  "source": "derived",
+  "hash": "sha256:e22ba6ed80a20c922bc95a0c5a888e4543167a0a0a3395b6e5cdefa9b514faa6",
+  "date_range": "2014-09-18 -> 2019-07-14",
+  "frequency": "4h",
+  "role": "sentiment_aggregated",
+  "created_at": "2026-01-06T21:31:24.576168+00:00"
+}

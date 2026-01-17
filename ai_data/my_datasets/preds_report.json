@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "rows": 179,
+  "model_id": "m_e159fa7e956a",
+  "mean_pred": 0.0009026852611295363,
+  "std_pred": 4.280226727709579e-05,
+  "nonzero_positions": 0,
+  "max_abs_position": 0.0,
+  "output_path": "ai_data/my_datasets/preds.parquet"
+}

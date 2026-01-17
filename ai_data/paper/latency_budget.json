@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "mode": "paper_only",
+  "max_order_submit_ms": 250,
+  "max_data_lag_ms": 2000,
+  "action": "halt"
+}

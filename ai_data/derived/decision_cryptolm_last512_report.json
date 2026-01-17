@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "rows": 512,
+  "model_id": "m_d7c07042ac2b",
+  "mean_pred": -0.00038249340103968537,
+  "std_pred": 0.00044160951713302854,
+  "nonzero_positions": 316,
+  "max_abs_position": 0.24509396271242445,
+  "output_path": "ai_data/derived/decision_cryptolm_last512.parquet"
+}

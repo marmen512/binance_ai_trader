@@ -1,0 +1,11 @@
+{
+  "dataset_id": "ds_bf61963d40e9",
+  "created_at": "2026-01-05T22:01:54.971710+00:00",
+  "paths": [
+    "ai_data/my_datasets/sample_ohlcv.parquet"
+  ],
+  "sha256": "bf61963d40e9bcab7e320c383284fbcc1220fa24326c9d493a48ba31160b1124",
+  "rows": 200,
+  "start_ts": "2024-01-01T00:00:00+00:00",
+  "end_ts": "2024-01-01T03:19:00+00:00"
+}

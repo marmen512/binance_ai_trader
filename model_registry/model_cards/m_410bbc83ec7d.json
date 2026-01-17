@@ -1,0 +1,52 @@
+{
+  "model_id": "m_410bbc83ec7d",
+  "created_at": "2026-01-07T00:58:15.876308+00:00",
+  "algo": "torch_mlp_classifier",
+  "data_paths": [
+    "ai_data/price/cryptolm_btc_usdt/data.parquet",
+    "ai_data/price/farmaanaa_btc_timeseries/data.parquet"
+  ],
+  "data_sha256": "410bbc83ec7d1795690a0c9da836337c59f54b81ca75f706b1777208d4aaecaf",
+  "rows_train": 66450,
+  "rows_val": 17463,
+  "rows_test": 0,
+  "target_col": "direction_target",
+  "feature_cols": [
+    "open",
+    "high",
+    "low",
+    "close",
+    "volume",
+    "sma_10",
+    "sma_20",
+    "ema_12",
+    "ema_26",
+    "macd",
+    "macd_signal",
+    "macd_hist",
+    "log_return",
+    "ret_1",
+    "atr_14",
+    "vol_20",
+    "bb_width_20",
+    "obv",
+    "volume_ema_20",
+    "hour",
+    "dayofweek",
+    "day",
+    "month",
+    "hour_sin",
+    "hour_cos",
+    "dow_sin",
+    "dow_cos",
+    "direction_q_low",
+    "direction_q_high",
+    "atr_pct"
+  ],
+  "metrics": {
+    "val_f1_macro": 0.3171751603805703,
+    "val_accuracy": 0.3218805474431656
+  },
+  "artifact_path": "model_registry/models/m_410bbc83ec7d/model.pt",
+  "dataset_sha256": "410bbc83ec7d1795690a0c9da836337c59f54b81ca75f706b1777208d4aaecaf"
+}

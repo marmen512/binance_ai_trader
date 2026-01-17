@@ -1,0 +1,8 @@
+app:
+  env: "dev"
+  log_level: "INFO"
+  log_dir: "./logs"
+  log_file: "app.log"
+  json_log_file: "app.json.log"
+  enable_json_file_log: true
+  console_log_format: "text"

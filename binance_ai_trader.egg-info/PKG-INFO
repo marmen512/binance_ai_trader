@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: binance_ai_trader
+Version: 0.0.1
+Requires-Python: >=3.10
+Requires-Dist: PyYAML>=6.0
+Requires-Dist: numpy>=1.26
+Requires-Dist: pandas>=2.0
+Requires-Dist: pyarrow>=14.0
+Requires-Dist: fastapi>=0.104
+Requires-Dist: uvicorn>=0.24
+Requires-Dist: textual>=0.60
+Requires-Dist: datasets>=2.18
+Requires-Dist: torch>=2.2
+Requires-Dist: tensorboard>=2.16
+Requires-Dist: streamlit>=1.31

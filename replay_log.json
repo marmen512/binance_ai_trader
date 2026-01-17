@@ -1,0 +1,26 @@
+[
+  {
+    "timestamp": "2025-01-11T09:00:00",
+    "action": "HOLD",
+    "label": "OK",
+    "reasoning": "Market lacks clear edge",
+    "confidence": 0.3,
+    "trades_per_day": 8
+  },
+  {
+    "timestamp": "2025-01-11T09:05:00",
+    "action": "BUY",
+    "label": "BAD",
+    "reasoning": "Entry was taken without sufficient edge under uncertainty; HOLD would have been safer",
+    "confidence": 0.8,
+    "trades_per_day": 9
+  },
+  {
+    "timestamp": "2025-01-11T09:10:00",
+    "action": "HOLD",
+    "label": "OK",
+    "reasoning": "False breakout risk remains",
+    "confidence": 0.2,
+    "trades_per_day": 9
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "name": "sentiment_aggregated_5m",
+  "source": "derived",
+  "path": "ai_data/sentiment/aggregated/sentiment_5m.parquet",
+  "hash": "sha256:a4701055f41dab1f2306f2c906db216fb0e8b8e715f3190daf95c7f0be6c9c75",
+  "sha256": "a4701055f41dab1f2306f2c906db216fb0e8b8e715f3190daf95c7f0be6c9c75",
+  "date_range": "2025-11-04 -> 2025-12-31",
+  "frequency": "5m",
+  "columns": [
+    "timestamp",
+    "sentiment_mean",
+    "sentiment_std",
+    "sentiment_count",
+    "sentiment_trend",
+    "sentiment_volatility"
+  ],
+  "no_overwrite": true,
+  "created_at": "2026-01-09T22:11:26.651368+00:00"
+}

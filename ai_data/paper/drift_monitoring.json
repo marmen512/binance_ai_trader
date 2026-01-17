@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "mode": "paper_only",
+  "window_days": 7,
+  "psi_threshold": 0.20,
+  "action": "halt"
+}

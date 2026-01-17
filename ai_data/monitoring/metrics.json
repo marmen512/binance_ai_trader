@@ -1,0 +1,12 @@
+{
+  "ts": "2026-01-07T00:06:25.871777+00:00",
+  "metrics": {
+    "paper_cash": 7060034.948718328,
+    "paper_position_units": 0.0,
+    "paper_fees_paid": 707.0740022920601,
+    "paper_equity": 7060034.948718328,
+    "paper_mid_price": 83192.28,
+    "paper_target_position": 0.0,
+    "paper_y_hat": -8.154455513685068e-05
+  }
+}

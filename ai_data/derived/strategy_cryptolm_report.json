@@ -1,0 +1,9 @@
+{
+  "ok":true,
+  "rows":66450,
+  "strategy":"strategy_router",
+  "total_return":-0.9704281116,
+  "sharpe":-0.0087807512,
+  "max_drawdown":-0.9769204605,
+  "trades":11241
+}

@@ -1,0 +1,11 @@
+PyYAML>=6.0
+numpy>=1.26
+pandas>=2.0
+pyarrow>=14.0
+fastapi>=0.104
+uvicorn>=0.24
+textual>=0.60
+datasets>=2.18
+torch>=2.2
+tensorboard>=2.16
+streamlit>=1.31
