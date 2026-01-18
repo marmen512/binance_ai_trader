@@ -3,3 +3,12 @@ __pycache__/
 .venv/
 venv-linux/
 logs/
+
+# runtime paper trading artifacts
+datasets/*.jsonl
+ai_data/
+replay_logs/
+
+# python cache
+__pycache__/
+*.pyc

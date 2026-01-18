@@ -1,8 +1,0 @@
-{
-  "enabled": true,
-  "mode": "paper_only",
-  "max_daily_loss_usd": 5000,
-  "max_drawdown_pct": 0.10,
-  "max_consecutive_losses": 8,
-  "halt_minutes": 240
-}

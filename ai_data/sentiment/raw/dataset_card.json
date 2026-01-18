@@ -1,9 +1,0 @@
-{
-  "name": "ckandemir/bitcoin_tweets_sentiment_kaggle",
-  "source": "huggingface",
-  "hash": "sha256:651002c0de74a6f99702e3b5c02d8f057c6c30d6160ad813e236057fad2de3e6",
-  "date_range": "2014-09-18 -> 2019-07-14",
-  "frequency": "unknown",
-  "role": "sentiment_raw",
-  "created_at": "2026-01-06T21:29:44.682233+00:00"
-}

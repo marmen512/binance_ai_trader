@@ -1,7 +1,0 @@
-{
-  "ts": "2026-01-07T01:09:55.722375+00:00",
-  "level": "error",
-  "code": "PAPER_LOOP_INFER_FAIL",
-  "message": "Missing feature cols for classifier: ['direction_q_low', 'direction_q_high', 'atr_pct']",
-  "payload": {}
-}

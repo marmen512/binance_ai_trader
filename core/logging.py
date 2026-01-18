@@ -1,33 +1,43 @@
-# core/logging.py
+"""
+Central logging utilities.
+
+ARCHITECTURAL RULES:
+- Read-only
+- No training logic
+- No model updates
+- Safe to use in replay, paper monitoring, offline preprocessing
+"""
 
 import logging
 import sys
-from pathlib import Path
+from typing import Optional
 
 
 def setup_logger(
     name: str,
     level: int = logging.INFO,
-    log_file: Path | None = None,
+    stream: Optional[object] = None,
 ) -> logging.Logger:
+    """
+    Create a simple, consistent logger.
+
+    This logger is intentionally minimal and side-effect free.
+    """
+
     logger = logging.getLogger(name)
 
     if logger.handlers:
         return logger  # already configured
 
     logger.setLevel(level)
+
+    handler = logging.StreamHandler(stream or sys.stdout)
     formatter = logging.Formatter(
-        "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+        "[%(asctime)s] %(levelname)s %(name)s: %(message)s"
     )
+    handler.setFormatter(formatter)
 
-    stream_handler = logging.StreamHandler(sys.stdout)
-    stream_handler.setFormatter(formatter)
-    logger.addHandler(stream_handler)
-
-    if log_file is not None:
-        log_file.parent.mkdir(parents=True, exist_ok=True)
-        file_handler = logging.FileHandler(log_file)
-        file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
+    logger.addHandler(handler)
+    logger.propagate = False
 
     return logger
