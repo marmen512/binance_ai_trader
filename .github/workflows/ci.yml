@@ -36,16 +36,11 @@ jobs:
           cat << 'EOF' > replay.json
           [
             {
-              "timestamp": "2026-01-01T00:00:00",
-              "entry_price": 1.0,
-              "exit_price": null,
-              "direction": "HOLD",
-              "pnl_pct": null,
+              "action": "HOLD",
+              "label": "OK",
               "reasoning": "no edge",
-              "model_id": "ci-test",
-              "entry_ts": "2026-01-01T00:00:00",
-              "exit_ts": null,
-              "status": "OPEN"
+              "confidence": 0.2,
+              "trades_per_day": 5
             }
           ]
           EOF
