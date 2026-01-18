@@ -19,3 +19,7 @@ checkpoints/**
 !checkpoints/**/training_meta.json
 venv/
 venv-linux/
+
+# === OFFLINE TRAINING ARTIFACTS (FROZEN) ===
+checkpoints/
+*.safetensors
