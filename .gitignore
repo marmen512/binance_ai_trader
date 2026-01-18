@@ -17,3 +17,5 @@ replay.jsonl
 # trained models / checkpoints
 checkpoints/**
 !checkpoints/**/training_meta.json
+venv/
+venv-linux/
