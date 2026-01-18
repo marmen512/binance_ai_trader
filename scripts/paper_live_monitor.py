@@ -53,6 +53,17 @@ def monitor(replay_log):
     Returns:
         dict: Behavioral metrics for safety validation
     """
+# Defensive guard: empty or invalid replay must never crash monitor
+    if not replay_log or not any(isinstance(r, dict) for r in replay_log): 
+       return {
+            "HOLD_PCT": 100.0,
+            "BUY_PCT": 0.0,
+            "SELL_PCT": 0.0,
+            "BAD_CONFIDENCE_CASES": 0,
+            "REPEATED_BAD_PATTERNS": 0,
+            "GOOD_RATIO": 0.0,
+        }
+
     total = len(replay_log)
     hold = sum(1 for r in replay_log if r["action"] == "HOLD")
     buy = sum(1 for r in replay_log if r["action"] == "BUY")
