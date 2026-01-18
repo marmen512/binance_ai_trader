@@ -9,40 +9,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install minimal dependencies
+      - name: Install minimal deps
         run: |
-          python -m pip install --upgrade pip
           pip install numpy pandas
 
-      - name: Import validation (NO execution)
+      - name: Import validation (no execution)
         run: |
           python - << 'EOF'
           import core.logging
           import training.replay_to_instruction
           import scripts.paper_live_monitor
-          print("✅ Import validation passed")
+          print("✅ imports OK")
           EOF
 
       - name: CI Gate — paper v1 invariants
         run: |
-          cat << 'EOF' > replay.json
-          [
-            {
-              "action": "HOLD",
-              "label": "OK",
-              "reasoning": "no edge",
-              "confidence": 0.2,
-              "trades_per_day": 5
-            }
-          ]
+          cat << 'EOF' > replay.jsonl
+          {"action":"HOLD","label":"OK","reasoning":"no edge","confidence":0.2,"trades_per_day":5}
           EOF
 
-          cat replay.json | bash ci/check_paper_v1.sh
+          cat replay.jsonl | bash ci/check_paper_v1.sh
