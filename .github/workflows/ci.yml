@@ -1,0 +1,53 @@
+name: Paper Trading v1 CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  paper-v1:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install minimal dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy pandas
+
+      - name: Import validation (NO execution)
+        run: |
+          python - << 'EOF'
+          import core.logging
+          import training.replay_to_instruction
+          import scripts.paper_live_monitor
+          print("✅ Import validation passed")
+          EOF
+
+      - name: CI Gate — paper v1 invariants
+        run: |
+          cat << 'EOF' > replay.json
+          [
+            {
+              "timestamp": "2026-01-01T00:00:00",
+              "entry_price": 1.0,
+              "exit_price": null,
+              "direction": "HOLD",
+              "pnl_pct": null,
+              "reasoning": "no edge",
+              "model_id": "ci-test",
+              "entry_ts": "2026-01-01T00:00:00",
+              "exit_ts": null,
+              "status": "OPEN"
+            }
+          ]
+          EOF
+
+          cat replay.json | bash ci/check_paper_v1.sh
