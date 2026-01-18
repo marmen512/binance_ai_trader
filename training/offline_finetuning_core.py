@@ -1,111 +1,165 @@
 """
-OFFLINE FINETUNING CORE (CPU ONLY)
+OFFLINE FINETUNING CORE — REAL TRAINING (MINIMAL)
 
-CRITICAL:
-- Offline only
-- No live / paper / CI imports allowed
-- Manual execution only
+WARNING:
+- MANUAL EXECUTION ONLY
+- NO PAPER / LIVE / CI USAGE
+- RUN ONLY AFTER PAPER-v1 FREEZE
 """
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 import torch
-from torch.utils.data import Dataset, DataLoader
 from torch.optim import AdamW
 from transformers import (
     AutoTokenizer,
     AutoModelForCausalLM,
+    DataCollatorForLanguageModeling,
+    Trainer,
+    TrainingArguments,
 )
 
 from core.logging import setup_logger
 
-logger = setup_logger("offline_finetuning_core")
-
-
-class InstructionDataset(Dataset):
-    def __init__(self, path: Path, tokenizer, max_len: int = 512):
-        self.samples = []
-        self.tokenizer = tokenizer
-        self.max_len = max_len
-
-        with open(path, "r", encoding="utf-8") as f:
-            for line in f:
-                obj = json.loads(line)
-                text = obj["instruction"] + "\n\n" + obj["response"]
-                self.samples.append(text)
-
-        logger.info(f"Loaded {len(self.samples)} instruction samples")
-
-    def __len__(self):
-        return len(self.samples)
-
-    def __getitem__(self, idx):
-        enc = self.tokenizer(
-            self.samples[idx],
-            truncation=True,
-            max_length=self.max_len,
-            padding="max_length",
-            return_tensors="pt",
-        )
-        return {
-            "input_ids": enc["input_ids"].squeeze(0),
-            "attention_mask": enc["attention_mask"].squeeze(0),
-            "labels": enc["input_ids"].squeeze(0),
-        }
+logger = setup_logger("binance_ai_trader.offline_finetuning_core")
 
 
 def fine_tune_pass(
     *,
-    dataset_path: str | Path,
+    dataset_path: str,
     model_name: str,
     output_dir: str | Path,
-    learning_rate: float,
-    num_epochs: int,
-    batch_size: int,
-):
-    logger.warning("OFFLINE TRAINING STARTED (MANUAL MODE)")
+    batch_size: int = 2,
+    learning_rate: float = 5e-6,
+    num_epochs: int = 1,
+    early_stopping_patience: int | None = None,
+    save_total_limit: int = 2,
+) -> dict[str, Any]:
+    """
+    Execute a single offline fine-tuning pass.
+
+    This function performs REAL model training.
+    It must NEVER be called automatically.
+    """
+
+    logger.warning("⚠ REAL OFFLINE TRAINING STARTED")
 
     dataset_path = Path(dataset_path)
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    device = torch.device("cpu")
-    logger.info("Device: CPU")
+    if not dataset_path.exists():
+        raise FileNotFoundError(dataset_path)
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(model_name)
+
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
-    model = AutoModelForCausalLM.from_pretrained(model_name)
-    model.to(device)
-    model.train()
+    # -------------------------
+    # Load instruction dataset
+    # -------------------------
+    texts: list[str] = []
 
-    dataset = InstructionDataset(dataset_path, tokenizer)
-    loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    with open(dataset_path, "r", encoding="utf-8") as f:
+        for line in f:
+            obj = json.loads(line)
 
-    optimizer = AdamW(model.parameters(), lr=learning_rate)
+            response = (
+                obj.get("response")
+                or obj.get("output")
+                or ""
+            )
 
-    for epoch in range(1, num_epochs + 1):
-        logger.info(f"Epoch {epoch}/{num_epochs}")
-        total_loss = 0.0
+            text = (
+                f"Instruction: {obj['instruction']}\n"
+                f"Response: {response}"
+            )
 
-        for step, batch in enumerate(loader, start=1):
-            optimizer.zero_grad()
-            batch = {k: v.to(device) for k, v in batch.items()}
-            out = model(**batch)
-            loss = out.loss
-            loss.backward()
-            optimizer.step()
-            total_loss += loss.item()
+            texts.append(text)
 
-        avg = total_loss / max(len(loader), 1)
-        logger.info(f"Epoch {epoch} avg loss={avg:.4f}")
+    if not texts:
+        raise RuntimeError("Dataset is empty — aborting offline training")
 
-    logger.info("Saving model")
-    model.save_pretrained(output_dir)
+    encodings = tokenizer(
+        texts,
+        truncation=True,
+        padding=True,
+        max_length=512,
+        return_tensors="pt",
+    )
+
+    class SimpleDataset(torch.utils.data.Dataset):
+        def __init__(self, enc):
+            self.enc = enc
+
+        def __len__(self):
+            return self.enc["input_ids"].size(0)
+
+        def __getitem__(self, idx):
+            return {k: v[idx] for k, v in self.enc.items()}
+
+    dataset = SimpleDataset(encodings)
+
+    data_collator = DataCollatorForLanguageModeling(
+        tokenizer=tokenizer,
+        mlm=False,
+    )
+
+    training_args = TrainingArguments(
+        output_dir=str(output_dir),
+        overwrite_output_dir=True,
+        num_train_epochs=num_epochs,
+        per_device_train_batch_size=batch_size,
+        learning_rate=learning_rate,
+        save_total_limit=save_total_limit,
+        save_strategy="no",   # контроль збереження ВРУЧНУ
+        logging_steps=10,
+        report_to="none",
+    )
+
+    trainer = Trainer(
+        model=model,
+        args=training_args,
+        train_dataset=dataset,
+        data_collator=data_collator,
+        optimizers=(AdamW(model.parameters(), lr=learning_rate), None),
+    )
+
+    # -------------------------
+    # REAL TRAINING
+    # -------------------------
+    trainer.train()
+
+    # -------------------------
+    # FORCE SAVE (CRITICAL)
+    # -------------------------
+    trainer.save_model(output_dir)
     tokenizer.save_pretrained(output_dir)
 
-    logger.warning("OFFLINE TRAINING FINISHED")
+    # -------------------------
+    # Save training metadata
+    # -------------------------
+    meta = {
+        "mode": "offline-training",
+        "dataset": str(dataset_path),
+        "model_name": model_name,
+        "epochs": num_epochs,
+        "batch_size": batch_size,
+        "learning_rate": learning_rate,
+    }
+
+    with open(output_dir / "training_meta.json", "w", encoding="utf-8") as f:
+        json.dump(meta, f, indent=2)
+
+    logger.info("✅ OFFLINE TRAINING FINISHED")
+
+    return {
+        "status": "ok",
+        "output_dir": str(output_dir),
+    }

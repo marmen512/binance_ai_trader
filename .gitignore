@@ -13,3 +13,7 @@ replay_logs/
 __pycache__/
 *.pyc
 replay.jsonl
+
+# trained models / checkpoints
+checkpoints/**
+!checkpoints/**/training_meta.json
