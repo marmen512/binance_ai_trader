@@ -1,0 +1,17 @@
+
+# env & secrets
+.env
+
+# runtime data
+data/
+logs/
+
+# models & checkpoints
+checkpoints/**
+!checkpoints/models/.gitkeep
+
+# python
+__pycache__/
+*.pyc
+venv/
+venv-linux/

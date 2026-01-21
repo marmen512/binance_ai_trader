@@ -23,3 +23,6 @@ venv-linux/
 # === OFFLINE TRAINING ARTIFACTS (FROZEN) ===
 checkpoints/
 *.safetensors
+
+# local helper scripts
+1.sh
