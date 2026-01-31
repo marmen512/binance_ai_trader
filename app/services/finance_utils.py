@@ -2,7 +2,7 @@
 Finance utilities for computing PnL and other financial metrics.
 """
 
-def compute_pnl_from_orders(orders):
+def compute_pnl_from_orders(orders: list) -> float:
     """
     Simple FIFO-based realized PnL for a sequence of orders.
     Works as a baseline version — extend as needed.
@@ -31,7 +31,7 @@ def compute_pnl_from_orders(orders):
         elif side == "sell":
             proceeds = qty * price
             if pos > 0:
-                avg_cost = cost / pos if pos != 0 else 0
+                avg_cost = cost / pos
                 realized += proceeds - (avg_cost * qty)
                 cost -= avg_cost * qty
                 pos -= qty
