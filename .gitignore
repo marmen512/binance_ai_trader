@@ -26,3 +26,27 @@ checkpoints/
 
 # local helper scripts
 1.sh
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Development
+.mypy_cache/
+.ruff_cache/
+.pre-commit-config.yaml.backup
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
