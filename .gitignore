@@ -1,28 +1,23 @@
+# Python
 __pycache__/
 *.pyc
-.venv/
-venv-linux/
-logs/
+*.pyo
 
-# runtime paper trading artifacts
-datasets/*.jsonl
-ai_data/
-replay_logs/
-
-# python cache
-__pycache__/
-*.pyc
-replay.jsonl
-
-# trained models / checkpoints
-checkpoints/**
-!checkpoints/**/training_meta.json
+# Venv
 venv/
 venv-linux/
+.env
 
-# === OFFLINE TRAINING ARTIFACTS (FROZEN) ===
+# Training artifacts
 checkpoints/
-*.safetensors
+datasets/*.jsonl
 
-# local helper scripts
-1.sh
+# Runtime data
+ai_data/
+replay_logs/
+replay.jsonl
+replay.json
+
+# OS
+.DS_Store
+Thumbs.db

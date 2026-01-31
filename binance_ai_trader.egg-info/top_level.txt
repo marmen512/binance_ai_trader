@@ -1,6 +1,7 @@
 backtest
 core
 data_pipeline
+execution
 execution_safety
 features
 interfaces
@@ -8,6 +9,8 @@ market
 model_registry
 models
 monitoring
+paper_gate
+signals
 strategies
 targets
 trading
