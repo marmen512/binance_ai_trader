@@ -56,8 +56,8 @@ def main():
                         help='Return threshold for classification')
     parser.add_argument('--binary', action='store_true',
                         help='Train binary classifier instead of multi-class')
-    parser.add_argument('--multiclass', action='store_true', default=True,
-                        help='Train multi-class classifier (default)')
+    parser.add_argument('--multiclass', action='store_true',
+                        help='Train multi-class classifier (default if --binary not specified)')
     
     args = parser.parse_args()
     
@@ -110,7 +110,7 @@ def main():
     df = compute_ohlcv_features(df)
     
     # Build target
-    binary_mode = args.binary and not args.multiclass
+    binary_mode = args.binary
     print(f"Building {'binary' if binary_mode else 'multi-class'} target...")
     df['target'] = build_target(df, horizon=args.horizon, threshold=args.threshold, binary=binary_mode)
     
