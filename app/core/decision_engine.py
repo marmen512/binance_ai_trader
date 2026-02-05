@@ -167,8 +167,9 @@ class DecisionEngine:
         return decision
 
 
-# Singleton instance
+# Singleton instance and path tracking
 _engine_instance = None
+_engine_model_path = None
 
 
 def get_engine(model_path: Optional[str] = None) -> DecisionEngine:
@@ -180,10 +181,19 @@ def get_engine(model_path: Optional[str] = None) -> DecisionEngine:
         
     Returns:
         DecisionEngine instance
+        
+    Note:
+        If model_path changes between calls, a new instance will be created.
     """
-    global _engine_instance
+    global _engine_instance, _engine_model_path
     
-    if _engine_instance is None:
+    # Normalize model_path to handle None case
+    if model_path is None:
+        model_path = os.getenv('SIGNAL_MODEL_PATH', 'models/signal_model.pkl')
+    
+    # Create new instance if none exists or path has changed
+    if _engine_instance is None or _engine_model_path != model_path:
         _engine_instance = DecisionEngine(model_path=model_path)
+        _engine_model_path = model_path
     
     return _engine_instance

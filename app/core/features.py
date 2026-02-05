@@ -4,6 +4,9 @@ Feature engineering utilities for OHLCV data.
 import pandas as pd
 import numpy as np
 
+# Small epsilon for numerical stability
+EPSILON = 1e-10
+
 
 def compute_ohlcv_features(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -32,7 +35,13 @@ def compute_ohlcv_features(df: pd.DataFrame) -> pd.DataFrame:
     df['atr'] = true_range.rolling(window=14).mean()
     
     # Candle body percentage
-    df['candle_body_pct'] = (df['close'] - df['open']) / (df['high'] - df['low'] + 1e-10)
+    high_low_range = df['high'] - df['low']
+    # Avoid division by zero: if range is too small, set to 0
+    df['candle_body_pct'] = np.where(
+        high_low_range > EPSILON,
+        (df['close'] - df['open']) / high_low_range,
+        0.0
+    )
     
     # High-low spread
     df['high_low_spread'] = (df['high'] - df['low']) / df['close']
@@ -45,7 +54,7 @@ def compute_ohlcv_features(df: pd.DataFrame) -> pd.DataFrame:
     delta = df['close'].diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
-    rs = gain / (loss + 1e-10)
+    rs = gain / (loss + EPSILON)
     df['rsi'] = 100 - (100 / (1 + rs))
     
     # MACD
@@ -55,7 +64,7 @@ def compute_ohlcv_features(df: pd.DataFrame) -> pd.DataFrame:
     
     # Volume spike (normalized volume)
     vol_ma = df['volume'].rolling(window=20).mean()
-    df['vol_spike'] = df['volume'] / (vol_ma + 1e-10)
+    df['vol_spike'] = df['volume'] / (vol_ma + EPSILON)
     
     # Lagged returns
     df['ret_1'] = df['returns'].shift(1)
