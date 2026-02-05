@@ -3,6 +3,8 @@ transformers
 accelerate>=0.26.0
 numpy
 pandas
+scikit-learn
+matplotlib
 
 # Dependencies for copytrade API/ML
 fastapi==0.95.2
