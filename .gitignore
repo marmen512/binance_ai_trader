@@ -11,12 +11,14 @@ venv-linux/
 # Training artifacts
 checkpoints/
 datasets/*.jsonl
+models/*.pkl
 
 # Runtime data
 ai_data/
 replay_logs/
 replay.jsonl
 replay.json
+data/
 
 # OS
 .DS_Store
