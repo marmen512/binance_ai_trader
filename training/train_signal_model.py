@@ -63,10 +63,9 @@ def parse_args():
         help='Force use of RandomForestClassifier instead of LightGBM'
     )
     parser.add_argument(
-        '--multiclass',
-        type=bool,
-        default=True,
-        help='Use multiclass classification (default: True)'
+        '--no-multiclass',
+        action='store_true',
+        help='Disable multiclass classification (default: enabled)'
     )
     parser.add_argument(
         '--test-size',
@@ -286,7 +285,7 @@ def main():
     print(f"  Output: {args.out}")
     print(f"  Horizon: {args.horizon}")
     print(f"  Threshold: {args.threshold}")
-    print(f"  Multiclass: {args.multiclass}")
+    print(f"  Multiclass: {not args.no_multiclass}")
     print(f"  Test size: {args.test_size}")
     print(f"  Force RF: {args.force_rf}")
     print("=" * 70)
