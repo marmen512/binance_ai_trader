@@ -195,7 +195,7 @@ def main():
         print(classification_report(y_val, y_pred, zero_division=0))
         
         # ROC AUC (if applicable)
-        if hasattr(model, 'predict_proba') and len(np.unique(y)) > 2:
+        if hasattr(model, 'predict_proba') and len(np.unique(y_val)) > 2:
             try:
                 y_proba = model.predict_proba(X_val)
                 # One-vs-rest ROC AUC for multi-class

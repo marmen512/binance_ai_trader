@@ -55,7 +55,8 @@ def compute_ohlcv_features(df: pd.DataFrame) -> pd.DataFrame:
     loss = -delta.where(delta < 0, 0.0)
     avg_gain = gain.rolling(window=14, min_periods=1).mean()
     avg_loss = loss.rolling(window=14, min_periods=1).mean()
-    rs = avg_gain / (avg_loss + 1e-10)
+    # Handle zero-loss case explicitly
+    rs = np.where(avg_loss > 1e-8, avg_gain / avg_loss, 100.0)
     result['rsi_14'] = 100 - (100 / (1 + rs))
     
     # MACD (Moving Average Convergence Divergence)
@@ -72,7 +73,12 @@ def compute_ohlcv_features(df: pd.DataFrame) -> pd.DataFrame:
     
     # Volume features
     result['volume_ma_20'] = result['volume'].rolling(window=20, min_periods=1).mean()
-    result['volume_spike'] = result['volume'] / (result['volume_ma_20'] + 1e-10)
+    # Handle zero-volume case explicitly
+    result['volume_spike'] = np.where(
+        result['volume_ma_20'] > 1e-8, 
+        result['volume'] / result['volume_ma_20'], 
+        1.0
+    )
     result['volume_change'] = result['volume'].pct_change()
     
     return result

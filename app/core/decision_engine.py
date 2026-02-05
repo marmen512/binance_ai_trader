@@ -149,9 +149,11 @@ class DecisionEngine:
             # or for binary: 0 (negative/SELL), 1 (positive/BUY)
             if len(proba) == 3:
                 # Multi-class: -1, 0, 1
-                class_idx = int(pred_class) + 1  # Convert -1,0,1 to 0,1,2
-                if class_idx < 0 or class_idx >= 3:
-                    # Handle edge case: use argmax
+                # Validate pred_class is in expected range
+                if pred_class in [-1, 0, 1]:
+                    class_idx = int(pred_class) + 1  # Convert -1,0,1 to 0,1,2
+                else:
+                    # Handle unexpected prediction: use argmax
                     class_idx = int(np.argmax(proba))
                 confidence = float(proba[class_idx])
             else:
