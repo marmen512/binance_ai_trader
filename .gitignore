@@ -11,6 +11,7 @@ venv-linux/
 # Training artifacts
 checkpoints/
 datasets/*.jsonl
+models/*.pkl
 
 # Runtime data
 ai_data/
