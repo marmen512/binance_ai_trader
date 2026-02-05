@@ -12,6 +12,12 @@ venv-linux/
 checkpoints/
 datasets/*.jsonl
 
+# ML models and data
+data/btcusdt_5m.csv
+models/*.pkl
+!models/.gitkeep
+equity_curve.png
+
 # Runtime data
 ai_data/
 replay_logs/
