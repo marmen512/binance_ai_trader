@@ -18,6 +18,11 @@ replay_logs/
 replay.jsonl
 replay.json
 
+# AI backtest data and results
+data/
+results/
+models/*.pkl
+
 # OS
 .DS_Store
 Thumbs.db
