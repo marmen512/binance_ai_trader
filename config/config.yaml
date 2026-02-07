@@ -7,6 +7,14 @@ app:
   enable_json_file_log: true
   console_log_format: "text"
 
+# Job retry configuration
+retry:
+  max_attempts: 3
+  cooldown_seconds: 60
+  exponential_backoff: true
+  max_cooldown_seconds: 3600
+  audit_log_path: "logs/job_retry_audit"
+
 # Adaptive learning configuration
 adaptive:
   enabled: false
