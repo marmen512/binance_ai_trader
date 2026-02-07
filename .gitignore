@@ -1,22 +1,55 @@
 # Python
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Venv
+# Virtual environments
 venv/
 venv-linux/
-.env
+ENV/
+env/
 
-# Training artifacts
-checkpoints/
-datasets/*.jsonl
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
-# Runtime data
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Logs and data
+logs/
+*.log
 ai_data/
-replay_logs/
-replay.jsonl
-replay.json
+adaptive_logs/
+adaptive_models/
+
+# Config (sensitive)
+.env
+config/secrets.yaml
 
 # OS
 .DS_Store
