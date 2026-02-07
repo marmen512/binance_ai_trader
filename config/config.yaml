@@ -14,6 +14,24 @@ retry:
   exponential_backoff: true
   max_cooldown_seconds: 3600
   audit_log_path: "logs/job_retry_audit"
+  
+  # Circuit breaker configuration
+  circuit_breaker:
+    enabled: true
+    failure_threshold: 10
+    time_window_minutes: 5
+  
+  # Metrics configuration
+  metrics:
+    enabled: true
+    time_window_minutes: 60
+  
+  # Redis safety configuration
+  redis:
+    namespace: "idempotency"
+    ttl_seconds: 259200  # 72 hours
+    memory_budget_mb: 100
+    check_eviction_policy: true
 
 # Adaptive learning configuration
 adaptive:

@@ -28,6 +28,9 @@ class FailureType(Enum):
     DATA_NOT_FOUND = "data_not_found"
     PERMISSION_ERROR = "permission_error"
     CONFIGURATION_ERROR = "configuration_error"
+    INSUFFICIENT_BALANCE = "insufficient_balance"
+    EXCHANGE_BAN = "exchange_ban"
+    BAD_REQUEST = "bad_request"
     
     # Unknown
     UNKNOWN = "unknown"
@@ -47,6 +50,11 @@ class FailureClassifier:
         (r"OperationalError.*locked|database is locked", FailureType.DATABASE_LOCK),
         (r"TemporaryError|ServiceUnavailable|503|502|504", FailureType.TEMPORARY_ERROR),
         (r"ConnectTimeout|ReadTimeout|RequestException", FailureType.NETWORK_ERROR),
+        # Binance specific retryable errors
+        (r"BinanceAPIException.*-1003", FailureType.RATE_LIMIT),  # TOO_MANY_REQUESTS
+        (r"BinanceAPIException.*-1021", FailureType.TIMEOUT),  # Timestamp for this request is outside of the recvWindow
+        (r"BinanceAPIException.*-1006", FailureType.TEMPORARY_ERROR),  # An unexpected response was received
+        (r"BinanceAPIException.*-2015", FailureType.TEMPORARY_ERROR),  # Invalid API-key, IP, or permissions
     ]
     
     NON_RETRYABLE_PATTERNS = [
@@ -56,6 +64,15 @@ class FailureClassifier:
         (r"NotFound|404|DoesNotExist", FailureType.DATA_NOT_FOUND),
         (r"PermissionError|Forbidden|403|Unauthorized|401", FailureType.PERMISSION_ERROR),
         (r"ConfigurationError|ImproperlyConfigured", FailureType.CONFIGURATION_ERROR),
+        # Binance specific non-retryable errors
+        (r"BinanceAPIException.*-2010", FailureType.INSUFFICIENT_BALANCE),  # NEW_ORDER_REJECTED - Insufficient funds
+        (r"BinanceAPIException.*-1013", FailureType.VALIDATION_ERROR),  # INVALID_QUANTITY
+        (r"BinanceAPIException.*-1111", FailureType.VALIDATION_ERROR),  # PRECISION is over the maximum defined
+        (r"BinanceAPIException.*-1102", FailureType.BAD_REQUEST),  # Mandatory parameter missing
+        (r"BinanceAPIException.*-2011", FailureType.VALIDATION_ERROR),  # UNKNOWN_ORDER
+        (r"BinanceAPIException.*-1015", FailureType.RATE_LIMIT),  # Too many new orders
+        (r"insufficient.*balance|InsufficientFunds", FailureType.INSUFFICIENT_BALANCE),
+        (r"banned|suspended|account.*locked", FailureType.EXCHANGE_BAN),
     ]
     
     def __init__(self):
