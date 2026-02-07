@@ -57,6 +57,16 @@ include = [
   "paper_gate.*",
   "data_pipeline",
   "data_pipeline.*",
+  "adaptive",
+  "adaptive.*",
+  "copy_trader_analyzer",
+  "copy_trader_analyzer.*",
+  "events",
+  "events.*",
+  "leaderboard",
+  "leaderboard.*",
+  "decision",
+  "decision.*",
 ]
 exclude = [
   "config",

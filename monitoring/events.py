@@ -4,6 +4,7 @@ import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -11,6 +12,9 @@ class Event:
     ts: str
     kind: str
     payload: dict
+    feature_schema_version: Optional[str] = None
+    feature_hash: Optional[str] = None
+    feature_set_id: Optional[str] = None
 
 
 def _now_ts() -> str:
@@ -22,8 +26,18 @@ def append_event(
     payload: dict,
     *,
     path: str | Path = Path("ai_data") / "monitoring" / "events.jsonl",
+    feature_schema_version: Optional[str] = None,
+    feature_hash: Optional[str] = None,
+    feature_set_id: Optional[str] = None,
 ) -> Event:
-    e = Event(ts=_now_ts(), kind=str(kind), payload=dict(payload))
+    e = Event(
+        ts=_now_ts(), 
+        kind=str(kind), 
+        payload=dict(payload),
+        feature_schema_version=feature_schema_version,
+        feature_hash=feature_hash,
+        feature_set_id=feature_set_id,
+    )
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     p.open("a", encoding="utf-8").write(json.dumps(e.__dict__, ensure_ascii=False) + "\n")

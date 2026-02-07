@@ -21,6 +21,10 @@ class ModelCard:
     feature_cols: list[str]
     metrics: dict[str, float]
     artifact_path: str
+    # v2 enhancements
+    model_version: str = "1.0"
+    training_window: dict = None
+    feature_schema_hash: str = ""
 
 
 def _hash_files(paths: list[Path]) -> str:
@@ -31,6 +35,13 @@ def _hash_files(paths: list[Path]) -> str:
             for chunk in iter(lambda: f.read(1024 * 1024), b""):
                 h.update(chunk)
     return h.hexdigest()
+
+
+def _compute_feature_schema_hash(feature_cols: list[str]) -> str:
+    """Compute hash of feature schema."""
+    sorted_cols = sorted(feature_cols)
+    cols_str = ",".join(sorted_cols)
+    return hashlib.sha256(cols_str.encode()).hexdigest()[:16]
 
 
 def write_model_card(
@@ -45,6 +56,8 @@ def write_model_card(
     feature_cols: list[str],
     metrics: dict[str, float],
     artifact_path: str | Path,
+    model_version: str = "1.0",
+    training_window: dict = None,
 ) -> ModelCard:
     reg = Path(registry_dir)
     reg.mkdir(parents=True, exist_ok=True)
@@ -57,6 +70,7 @@ def write_model_card(
     sha256 = _hash_files(path_objs)
     created_at = datetime.now(timezone.utc).isoformat()
     model_id = f"m_{sha256[:12]}"
+    feature_schema_hash = _compute_feature_schema_hash(feature_cols)
 
     card = ModelCard(
         model_id=model_id,
@@ -71,6 +85,9 @@ def write_model_card(
         feature_cols=list(feature_cols),
         metrics={k: float(v) for k, v in metrics.items()},
         artifact_path=str(artifact_path),
+        model_version=model_version,
+        training_window=training_window or {},
+        feature_schema_hash=feature_schema_hash,
     )
 
     out_path = reg / f"{model_id}.json"
