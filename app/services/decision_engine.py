@@ -2,7 +2,7 @@ from app.core.config import settings
 from app.core.db import SessionLocal
 from app.models.orm_models import Signal, ReplicatedTrade
 from app.services.features import build_features_from_signal
-from app.services.ml_online import OnlineModel
+from adaptive.ml_online import OnlineModel
 from rq import Queue
 from redis import Redis
 from app.services.finance_utils import compute_pnl_from_orders

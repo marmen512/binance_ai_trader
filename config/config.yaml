@@ -6,3 +6,75 @@ app:
   json_log_file: "app.json.log"
   enable_json_file_log: true
   console_log_format: "text"
+
+# Job retry configuration
+retry:
+  max_attempts: 3
+  cooldown_seconds: 60
+  exponential_backoff: true
+  max_cooldown_seconds: 3600
+  audit_log_path: "logs/job_retry_audit"
+  
+  # Advanced safety features (disabled by default for gradual rollout)
+  anomaly_guard: false
+  circuit_breaker_alerts: false
+  
+  # Circuit breaker configuration
+  circuit_breaker:
+    enabled: true
+    failure_threshold: 10
+    time_window_minutes: 5
+  
+  # Metrics configuration
+  metrics:
+    enabled: true
+    time_window_minutes: 60
+  
+  # Redis safety configuration
+  redis:
+    namespace: "idempotency"
+    ttl_seconds: 259200  # 72 hours
+    memory_budget_mb: 100
+    check_eviction_policy: true
+
+# Runtime safety checks configuration
+runtime:
+  redis_checks: false  # Disabled by default for gradual rollout
+
+# Adaptive learning configuration
+adaptive:
+  enabled: false
+  shadow_learning: true
+  drift_guard: true
+  promotion_gate:
+    min_winrate: 0.52
+    min_expectancy: 0.0
+    min_trades: 100
+    max_loss_streak: 5
+  feature_logging:
+    enabled: true
+    log_path: "ai_data/adaptive/features"
+    sharded: true  # Use daily sharded parquet files
+
+# Leaderboard/copy-trader analysis configuration
+leaderboard:
+  enabled: false
+  validation_required: true
+  min_trader_winrate: 0.55
+  min_trader_roi: 0.10
+  confidence_threshold: 0.7
+
+# Hybrid decision layer configuration
+hybrid:
+  enabled: false
+  own_model_weight: 0.4
+  copy_weight: 0.3
+  regime_weight: 0.3
+  min_confidence_threshold: 0.6
+  min_agreement_ratio: 0.5
+
+# Event system configuration
+events:
+  enabled: true
+  log_events: true
+  log_path: "ai_data/events/trade_events.jsonl"
