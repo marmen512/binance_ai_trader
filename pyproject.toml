@@ -59,6 +59,8 @@ include = [
   "data_pipeline.*",
   "adaptive",
   "adaptive.*",
+  "copy_trader_analyzer",
+  "copy_trader_analyzer.*",
 ]
 exclude = [
   "config",
