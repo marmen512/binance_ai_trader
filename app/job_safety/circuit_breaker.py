@@ -9,16 +9,91 @@ Features:
 - Alert event emission
 - Manual override requirement to resume
 - Per-job-type circuit breakers
+- Alert hooks for logging, metrics, events, and webhooks
 """
 
 import logging
 import time
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, Callable, List
 from datetime import datetime, timedelta
 from collections import deque
 import redis
 
 logger = logging.getLogger(__name__)
+
+
+class AlertHooks:
+    """
+    Alert hooks for circuit breaker events.
+    
+    Supports:
+    - Log hooks (custom logging)
+    - Metric hooks (Prometheus, StatsD, etc.)
+    - Event hooks (message queue, event bus)
+    - Webhook hooks (PagerDuty, Slack, etc.)
+    """
+    
+    def __init__(self):
+        """Initialize alert hooks"""
+        self.log_hooks: List[Callable[[str, str, Dict[str, Any]], None]] = []
+        self.metric_hooks: List[Callable[[str, str, Dict[str, Any]], None]] = []
+        self.event_hooks: List[Callable[[str, str, Dict[str, Any]], None]] = []
+        self.webhook_hooks: List[Callable[[str, str, Dict[str, Any]], None]] = []
+    
+    def add_log_hook(self, hook: Callable[[str, str, Dict[str, Any]], None]) -> None:
+        """Add a log hook"""
+        self.log_hooks.append(hook)
+    
+    def add_metric_hook(self, hook: Callable[[str, str, Dict[str, Any]], None]) -> None:
+        """Add a metric hook"""
+        self.metric_hooks.append(hook)
+    
+    def add_event_hook(self, hook: Callable[[str, str, Dict[str, Any]], None]) -> None:
+        """Add an event hook"""
+        self.event_hooks.append(hook)
+    
+    def add_webhook_hook(self, hook: Callable[[str, str, Dict[str, Any]], None]) -> None:
+        """Add a webhook hook"""
+        self.webhook_hooks.append(hook)
+    
+    def trigger_log(self, event_type: str, message: str, context: Dict[str, Any]) -> None:
+        """Trigger log hooks"""
+        for hook in self.log_hooks:
+            try:
+                hook(event_type, message, context)
+            except Exception as e:
+                logger.error(f"Log hook failed: {e}")
+    
+    def trigger_metric(self, event_type: str, message: str, context: Dict[str, Any]) -> None:
+        """Trigger metric hooks"""
+        for hook in self.metric_hooks:
+            try:
+                hook(event_type, message, context)
+            except Exception as e:
+                logger.error(f"Metric hook failed: {e}")
+    
+    def trigger_event(self, event_type: str, message: str, context: Dict[str, Any]) -> None:
+        """Trigger event hooks"""
+        for hook in self.event_hooks:
+            try:
+                hook(event_type, message, context)
+            except Exception as e:
+                logger.error(f"Event hook failed: {e}")
+    
+    def trigger_webhook(self, event_type: str, message: str, context: Dict[str, Any]) -> None:
+        """Trigger webhook hooks"""
+        for hook in self.webhook_hooks:
+            try:
+                hook(event_type, message, context)
+            except Exception as e:
+                logger.error(f"Webhook hook failed: {e}")
+    
+    def trigger_all(self, event_type: str, message: str, context: Dict[str, Any]) -> None:
+        """Trigger all hooks"""
+        self.trigger_log(event_type, message, context)
+        self.trigger_metric(event_type, message, context)
+        self.trigger_event(event_type, message, context)
+        self.trigger_webhook(event_type, message, context)
 
 
 class CircuitState:
@@ -42,7 +117,8 @@ class CircuitBreaker:
         job_type: str = "default",
         failure_threshold: int = 10,
         time_window_minutes: int = 5,
-        namespace: str = "circuit_breaker"
+        namespace: str = "circuit_breaker",
+        alert_hooks: Optional[AlertHooks] = None
     ):
         """
         Initialize circuit breaker.
@@ -53,12 +129,14 @@ class CircuitBreaker:
             failure_threshold: Number of failures to trigger circuit break
             time_window_minutes: Time window for counting failures
             namespace: Redis namespace prefix
+            alert_hooks: Optional alert hooks for custom alerting
         """
         self.redis = redis_client
         self.job_type = job_type
         self.failure_threshold = failure_threshold
         self.time_window_minutes = time_window_minutes
         self.namespace = namespace
+        self.alert_hooks = alert_hooks or AlertHooks()
         
         # Redis keys
         self.state_key = f"{namespace}:{job_type}:state"
@@ -296,8 +374,18 @@ class CircuitBreaker:
             # Log the alert
             logger.critical(f"ALERT [{event_type}]: {message}")
             
-            # TODO: Integrate with external alerting system (PagerDuty, Slack, etc.)
-            # For now, just log
+            # Build alert context
+            context = {
+                "job_type": self.job_type,
+                "failure_count": self.get_failure_count(),
+                "failure_threshold": self.failure_threshold,
+                "time_window_minutes": self.time_window_minutes,
+                "state": self.get_state(),
+                "timestamp": datetime.utcnow().isoformat()
+            }
+            
+            # Trigger alert hooks
+            self.alert_hooks.trigger_all(event_type, message, context)
             
         except Exception as e:
             logger.error(f"Failed to emit alert event: {e}")
